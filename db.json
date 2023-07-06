@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "title": "title",
+      "description": "description",
+      "data": 1688648122
+    },
+    {
+      "id": 2,
+      "title": "title2",
+      "description": "description2",
+      "data": 1688648122
+    },
+    {
+      "id": 1,
+      "title": "title3",
+      "description": "description3",
+      "data": 1688648122
+    }
+  ]
+}

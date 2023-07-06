@@ -1,9 +1,8 @@
 import moment from 'moment';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import CalendarGrid from '../CalendarGrid';
-import Header from '../Header';
 import Monitor from '../Monitor';
 
 const ShadowWrapper = styled.div`
@@ -13,10 +12,20 @@ const ShadowWrapper = styled.div`
   box-shadow: 0 0 0 1px #1a1a1a, 0 8px 28px 6px #888;
 `;
 
+interface User {
+  id?: number;
+  title: string;
+  description: string;
+  data: number;
+}
+
+const uri = 'http://localhost:3000';
+const totalDay = 42;
+
 const App = () => {
   moment.updateLocale('en', { week: { dow: 1 } });
 
-  const [today, setToday] = useState(moment());
+  const [today, setToday] = useState<moment.Moment>(moment());
   const startDay = today.clone().startOf('month').startOf('week');
 
   const prevHuddler = () => {
@@ -27,16 +36,29 @@ const App = () => {
     setToday((prev) => prev.clone().add(1, 'month'));
   };
 
+  const [events, setEvents] = useState<User[]>([]);
+
+  const startDayQuery = startDay.clone().format('X');
+  const endDayQuery = startDay.clone().add(totalDay, 'days').format('X');
+
+  useEffect(() => {
+    fetch(`${uri}/events?data_gte=${startDayQuery}&data_lte=${endDayQuery}`)
+      .then((res) => res.json())
+      .then((res) => {
+        setEvents(res);
+      });
+  }, []);
+
   return (
     <ShadowWrapper>
-      <Header />
+      {/* <Header /> */}
       <Monitor
         today={today}
         prevHuddler={prevHuddler}
         todayHuddler={todayHuddler}
         nextHuddler={nextHuddler}
       />
-      <CalendarGrid startDay={startDay} today={today} />
+      <CalendarGrid startDay={startDay} today={today} totalDay={totalDay} />
     </ShadowWrapper>
   );
 };

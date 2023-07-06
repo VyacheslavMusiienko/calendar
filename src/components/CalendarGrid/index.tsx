@@ -4,6 +4,7 @@ import styled, { CSSProperties } from 'styled-components';
 type CalendarProps = {
   startDay: moment.Moment;
   today: moment.Moment;
+  totalDay: number;
 };
 type CellWrapperProps = {
   isHeader?: boolean;
@@ -55,9 +56,9 @@ const CurrentDay = styled.div`
   justify-content: center;
 `;
 
-const CalendarGrid = ({ startDay, today }: CalendarProps) => {
+const CalendarGrid = ({ startDay, today, totalDay }: CalendarProps) => {
   const day = startDay.clone().subtract(1, 'day');
-  const daysArray = [...Array(42)].map(() => day.add(1, 'day').clone());
+  const daysArray = [...Array(totalDay)].map(() => day.add(1, 'day').clone());
 
   const isCurrentDay = (currentDay: moment.Moment): boolean => moment().isSame(currentDay, 'day');
   const isSelectedMonth = (currentMonth: moment.Moment): boolean =>
