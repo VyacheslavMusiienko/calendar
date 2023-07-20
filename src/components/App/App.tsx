@@ -66,7 +66,7 @@ const totalDay = 42;
 const defaultEvent = {
   title: '',
   description: '',
-  data: moment().format('X'),
+  data: moment().unix(),
 };
 
 const App = () => {
@@ -95,7 +95,9 @@ const App = () => {
     setMethod(methodName);
     setShowForm(true);
     if (eventForUpdate) {
-      setEvent(eventForUpdate || defaultEvent);
+      setEvent(eventForUpdate);
+    } else {
+      setEvent(defaultEvent);
     }
   };
 
@@ -125,6 +127,46 @@ const App = () => {
     });
   };
 
+  const eventFetchHandler = () => {
+    if (!event) {
+      console.error('Event data is null.');
+      return;
+    }
+
+    const fetchUri = method === 'Update' ? `${uri}/events/${event.id}` : `${uri}/events`;
+    const httpMethod = method === 'Update' ? 'PATCH' : 'POST';
+
+    const eventData = JSON.stringify({
+      title: event.title,
+      description: event.description,
+      data: event.data,
+    });
+
+    fetch(fetchUri, {
+      method: httpMethod,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: eventData,
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        if (method === 'Update') {
+          setEvents((prevState) =>
+            prevState.map((eventEl) => (eventEl.id === res.id ? res : eventEl))
+          );
+        } else {
+          setEvents((prevState) => [...prevState, res]);
+        }
+
+        cancelButtonHuddler();
+      })
+      .catch((error) => {
+        console.error('Error occurred during fetch:', error);
+      });
+  };
+
   return (
     <>
       {isShowForm ? (
@@ -142,7 +184,9 @@ const App = () => {
               <button type="button" onClick={cancelButtonHuddler}>
                 Cancel
               </button>
-              <button type="button">{method}</button>
+              <button type="button" onClick={eventFetchHandler}>
+                {method}
+              </button>
             </ButtonWrapper>
           </FormWrapper>
         </FormPositionWrapper>
