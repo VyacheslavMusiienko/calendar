@@ -7,6 +7,7 @@ type CalendarProps = {
   today: moment.Moment;
   totalDay: number;
   events: User[];
+  openFormHandler: (method: 'Update' | 'Create', eventForUpdate?: User) => void;
 };
 type CellWrapperProps = {
   isHeader?: boolean;
@@ -24,6 +25,7 @@ const GridWrapper = styled.div<CellWrapperProps>`
   grid-gap: 1px;
   background-color: ${(props) => (props.isHeader ? '#1e1f21' : '#404040')};
   ${(props) => props.isHeader && 'border-bottom: 1px solid #404040'}
+  cursor: pointer;
 `;
 
 const CellWrapper = styled.div<CellWrapperProps>`
@@ -85,7 +87,7 @@ const EventItemWrapper = styled.button`
   text-align: left;
 `;
 
-const CalendarGrid = ({ startDay, today, totalDay, events }: CalendarProps) => {
+const CalendarGrid = ({ startDay, today, totalDay, events, openFormHandler }: CalendarProps) => {
   const day = startDay.clone().subtract(1, 'day');
   const daysArray = [...Array(totalDay)].map(() => day.add(1, 'day').clone());
 
@@ -119,7 +121,7 @@ const CalendarGrid = ({ startDay, today, totalDay, events }: CalendarProps) => {
             >
               <RowInCell justifyContent="flex-end">
                 <ShowDayWrapper>
-                  <DayWrapper>
+                  <DayWrapper onDoubleClick={() => openFormHandler('Create')}>
                     {isCurrentDay(dayItem) ? (
                       <CurrentDay>{dayItem.format('D')}</CurrentDay>
                     ) : (
@@ -135,11 +137,12 @@ const CalendarGrid = ({ startDay, today, totalDay, events }: CalendarProps) => {
                         event.data <= parseInt(dayItem.clone().endOf('day').format('X'), 10)
                     )
                     .map((event) => (
-                      <li key={event.data}>
-                        <EventItemWrapper>{event.title}</EventItemWrapper>
+                      <li key={event.id}>
+                        <EventItemWrapper onDoubleClick={() => openFormHandler('Update', event)}>
+                          {event.title}
+                        </EventItemWrapper>
                       </li>
                     ))}
-                  <div>event-3</div>
                 </EventListWrapper>
               </RowInCell>
             </CellWrapper>
