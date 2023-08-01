@@ -2,5 +2,5 @@ export interface User {
   id?: number;
   title: string;
   description: string;
-  data: number;
+  data: string;
 }

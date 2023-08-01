@@ -7,7 +7,11 @@ type CalendarProps = {
   today: moment.Moment;
   totalDay: number;
   events: User[];
-  openFormHandler: (method: 'Update' | 'Create', eventForUpdate?: User) => void;
+  openFormHandler: (
+    method: 'Update' | 'Create',
+    eventForUpdate?: User | null,
+    dayItem?: moment.Moment
+  ) => void;
 };
 type CellWrapperProps = {
   isHeader?: boolean;
@@ -121,7 +125,7 @@ const CalendarGrid = ({ startDay, today, totalDay, events, openFormHandler }: Ca
             >
               <RowInCell justifyContent="flex-end">
                 <ShowDayWrapper>
-                  <DayWrapper onDoubleClick={() => openFormHandler('Create')}>
+                  <DayWrapper onDoubleClick={() => openFormHandler('Create', null, dayItem)}>
                     {isCurrentDay(dayItem) ? (
                       <CurrentDay>{dayItem.format('D')}</CurrentDay>
                     ) : (
@@ -133,8 +137,8 @@ const CalendarGrid = ({ startDay, today, totalDay, events, openFormHandler }: Ca
                   {events
                     .filter(
                       (event) =>
-                        event.data >= parseInt(dayItem.format('X'), 10) &&
-                        event.data <= parseInt(dayItem.clone().endOf('day').format('X'), 10)
+                        event.data >= dayItem.format('X') &&
+                        event.data <= dayItem.clone().endOf('day').format('X')
                     )
                     .map((event) => (
                       <li key={event.id}>

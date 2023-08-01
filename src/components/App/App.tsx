@@ -27,7 +27,7 @@ const FormPositionWrapper = styled.div`
 `;
 
 const FormWrapper = styled(ShadowWrapper)`
-  width: 200px;
+  width: 320px;
   background-color: #1e1f21;
   color: #dddddd;
   box-shadow: unset;
@@ -44,7 +44,7 @@ const EventTitle = styled('input')`
   border-bottom: 1px solid #464648;
 `;
 
-const EventBody = styled('input')`
+const EventBody = styled('textarea')`
   padding: 4px 14px;
   font-size: 0.85rem;
   width: 100%;
@@ -53,6 +53,8 @@ const EventBody = styled('input')`
   color: #dddddd;
   outline: unset;
   border-bottom: 1px solid #464648;
+  resize: none;
+  height: 60px;
 `;
 
 const ButtonWrapper = styled('div')`
@@ -66,7 +68,7 @@ const totalDay = 42;
 const defaultEvent = {
   title: '',
   description: '',
-  data: moment().unix(),
+  data: moment().format('X'),
 };
 
 const App = () => {
@@ -91,13 +93,17 @@ const App = () => {
   const startDayQuery = startDay.clone().format('X');
   const endDayQuery = startDay.clone().add(totalDay, 'days').format('X');
 
-  const openFormHandler = (methodName: 'Update' | 'Create', eventForUpdate?: User) => {
+  const openFormHandler = (
+    methodName: 'Update' | 'Create',
+    eventForUpdate?: User | null,
+    dayItem?: moment.Moment
+  ) => {
     setMethod(methodName);
     setShowForm(true);
     if (eventForUpdate) {
       setEvent(eventForUpdate);
     } else {
-      setEvent(defaultEvent);
+      setEvent({ ...defaultEvent, data: dayItem ? dayItem.format('X') : moment().format('X') });
     }
   };
 
@@ -167,6 +173,31 @@ const App = () => {
       });
   };
 
+  const removeEventHandler = () => {
+    if (!event) {
+      console.error('Event data is null.');
+      return;
+    }
+    const fetchUri = `${uri}/events/${event.id}`;
+    const httpMethod = 'DELETE';
+
+    fetch(fetchUri, {
+      method: httpMethod,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setEvents((prevState) => prevState.filter((eventEl) => eventEl.id !== event.id));
+        cancelButtonHuddler();
+      })
+      .catch((error) => {
+        console.error('Error occurred during fetch:', error);
+      });
+  };
+
   return (
     <>
       {isShowForm ? (
@@ -175,18 +206,27 @@ const App = () => {
             <EventTitle
               value={event?.title}
               onChange={(e) => changeEventHandler(e.target.value, 'title')}
+              placeholder="Title"
             />
             <EventBody
               value={event?.description}
               onChange={(e) => changeEventHandler(e.target.value, 'description')}
+              placeholder="Description"
             />
             <ButtonWrapper>
               <button type="button" onClick={cancelButtonHuddler}>
                 Cancel
               </button>
+
               <button type="button" onClick={eventFetchHandler}>
                 {method}
               </button>
+
+              {method === 'Update' ? (
+                <button type="button" onClick={removeEventHandler}>
+                  Remove
+                </button>
+              ) : null}
             </ButtonWrapper>
           </FormWrapper>
         </FormPositionWrapper>
