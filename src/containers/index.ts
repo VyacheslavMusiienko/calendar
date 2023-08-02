@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CellWrapperProps, RowInCellProps } from '../../type';
+import { CellWrapperProps, RowInCellProps } from '../type';
 
 export const GridWrapper = styled.div<CellWrapperProps>`
   display: grid;
@@ -25,12 +25,13 @@ export const RowInCell = styled.div<RowInCellProps>`
 `;
 
 export const DayWrapper = styled.div`
-  height: 33px;
+  height: 31px;
   width: 31px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 2px;
+  cursor: pointer;
 `;
 
 export const ShowDayWrapper = styled.div`
@@ -41,7 +42,7 @@ export const ShowDayWrapper = styled.div`
 export const CurrentDay = styled.div`
   height: 100%;
   width: 100%;
-  background-color: #f00;
+  background: #f00;
   border-radius: 50%;
   display: flex;
   align-items: center;

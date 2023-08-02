@@ -1,6 +1,6 @@
+import { isDayContainCurrentEvent } from '../../helpers';
 import { User } from '../../type';
 import CalendarCell from '../CalendarCell';
-import { isDayContainCurrentEvent } from '../helpers';
 
 type CalendarGridBodyProps = {
   startDay: moment.Moment;

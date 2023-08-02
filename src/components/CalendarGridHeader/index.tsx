@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { CellWrapper, RowInCell } from '../containers';
+import { CellWrapper, RowInCell } from '../../containers';
 
 const CalendarGridHeader = () => {
   return (

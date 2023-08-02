@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { User } from '../../type';
+import { User } from '../type';
 
 export const isCurrentDay = (currentDay: moment.Moment): boolean =>
   moment().isSame(currentDay, 'day');

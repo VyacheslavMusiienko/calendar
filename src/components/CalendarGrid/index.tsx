@@ -1,8 +1,8 @@
 import moment from 'moment';
+import { GridWrapper } from '../../containers';
 import { User } from '../../type';
 import CalendarGridBody from '../CalendarGridBody';
 import CalendarGridHeader from '../CalendarGridHeader';
-import { GridWrapper } from '../containers';
 
 type CalendarProps = {
   startDay: moment.Moment;

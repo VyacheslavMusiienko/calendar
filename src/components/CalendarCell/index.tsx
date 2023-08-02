@@ -1,5 +1,4 @@
 import moment from 'moment';
-import { User } from '../../type';
 import {
   CellWrapper,
   CurrentDay,
@@ -9,8 +8,9 @@ import {
   EventListWrapper,
   RowInCell,
   ShowDayWrapper,
-} from '../containers';
-import { isCurrentDay, isSelectedMonth } from '../helpers';
+} from '../../containers';
+import { isCurrentDay, isSelectedMonth } from '../../helpers';
+import { User } from '../../type';
 
 type CalendarCellProps = {
   dayItem: moment.Moment;
