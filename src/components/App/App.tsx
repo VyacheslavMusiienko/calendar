@@ -1,5 +1,4 @@
 import moment from 'moment';
-
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { User } from '../../type';
@@ -57,10 +56,23 @@ const EventBody = styled('textarea')`
   height: 60px;
 `;
 
-const ButtonWrapper = styled('div')`
+const ButtonsWrapper = styled('div')`
   padding: 8px 14px;
   display: flex;
   justify-content: flex-end;
+`;
+
+type ButtonWrapperProps = {
+  danger?: boolean;
+};
+const ButtonWrapper = styled.button<ButtonWrapperProps>`
+  color: ${(props) => (props.danger ? '#f00' : '#27282a')};
+  border: 1px solid ${(props) => (props.danger ? '#f00' : '#27282a')};
+  border-radius: 2px;
+  cursor: pointer;
+  &:not(:last-child) {
+    margin-right: 2px;
+  }
 `;
 
 const uri = 'http://localhost:3000';
@@ -213,21 +225,21 @@ const App = () => {
               onChange={(e) => changeEventHandler(e.target.value, 'description')}
               placeholder="Description"
             />
-            <ButtonWrapper>
-              <button type="button" onClick={cancelButtonHuddler}>
+            <ButtonsWrapper>
+              <ButtonWrapper type="button" onClick={cancelButtonHuddler}>
                 Cancel
-              </button>
+              </ButtonWrapper>
 
-              <button type="button" onClick={eventFetchHandler}>
+              <ButtonWrapper type="button" onClick={eventFetchHandler}>
                 {method}
-              </button>
+              </ButtonWrapper>
 
               {method === 'Update' ? (
-                <button type="button" onClick={removeEventHandler}>
+                <ButtonWrapper danger type="button" onClick={removeEventHandler}>
                   Remove
-                </button>
+                </ButtonWrapper>
               ) : null}
-            </ButtonWrapper>
+            </ButtonsWrapper>
           </FormWrapper>
         </FormPositionWrapper>
       ) : null}
