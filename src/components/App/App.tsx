@@ -1,18 +1,27 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from '../../helpers/constans';
 import { User } from '../../type';
 import CalendarGrid from '../CalendarGrid';
+import DayShowComponent from '../DayShowComponent';
 import Monitor from '../Monitor';
 
-const ShadowWrapper = styled.div`
-  border: 1px solid #737374;
-  border-radius: 5px;
+const ShadowWrapper = styled('div')`
+  min-width: 850px;
+  height: 665px;
+  border-top: 1px solid #737374;
+  border-left: 1px solid #464648;
+  border-right: 1px solid #464648;
+  border-bottom: 2px solid #464648;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 0 0 1px #1a1a1a, 0 8px 28px 6px #888;
+  box-shadow: 0 0 0 1px #1a1a1a, 0 8px 20px 6px #888;
+  display: flex;
+  flex-direction: column;
 `;
 
-const FormPositionWrapper = styled.div`
+const FormPositionWrapper = styled('div')`
   position: absolute;
   z-index: 100;
   background-color: rgba(0, 0, 0, 0.35);
@@ -27,6 +36,8 @@ const FormPositionWrapper = styled.div`
 
 const FormWrapper = styled(ShadowWrapper)`
   width: 320px;
+  min-width: 320px;
+  height: 132px;
   background-color: #1e1f21;
   color: #dddddd;
   box-shadow: unset;
@@ -84,6 +95,10 @@ const defaultEvent = {
 };
 
 const App = () => {
+  const [displayMod, setDisplayMod] = useState<typeof DISPLAY_MODE_MONTH | typeof DISPLAY_MODE_DAY>(
+    DISPLAY_MODE_MONTH
+  );
+
   moment.updateLocale('en', { week: { dow: 1 } });
 
   const [today, setToday] = useState<moment.Moment>(moment());
@@ -95,11 +110,11 @@ const App = () => {
   const startDay = today.clone().startOf('month').startOf('week');
 
   const prevHuddler = () => {
-    setToday((prev) => prev.clone().subtract(1, 'month'));
+    setToday((prev) => prev.clone().subtract(1, displayMod));
   };
   const todayHuddler = () => setToday(moment());
   const nextHuddler = () => {
-    setToday((prev) => prev.clone().add(1, 'month'));
+    setToday((prev) => prev.clone().add(1, displayMod));
   };
 
   const startDayQuery = startDay.clone().format('X');
@@ -250,14 +265,26 @@ const App = () => {
           prevHuddler={prevHuddler}
           todayHuddler={todayHuddler}
           nextHuddler={nextHuddler}
+          setDisplayMod={setDisplayMod}
+          displayMod={displayMod}
         />
-        <CalendarGrid
-          startDay={startDay}
-          today={today}
-          totalDay={totalDay}
-          events={events}
-          openFormHandler={openFormHandler}
-        />
+        {displayMod === DISPLAY_MODE_MONTH ? (
+          <CalendarGrid
+            startDay={startDay}
+            today={today}
+            totalDay={totalDay}
+            events={events}
+            openFormHandler={openFormHandler}
+          />
+        ) : null}
+        {displayMod === DISPLAY_MODE_DAY ? (
+          <DayShowComponent
+            events={events}
+            today={today}
+            selectedEvent={event}
+            setEvent={setEvent}
+          />
+        ) : null}
       </ShadowWrapper>
     </>
   );
