@@ -1,6 +1,6 @@
 import moment from 'moment';
 import styled from 'styled-components';
-import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from '../../helpers/constans';
+import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from '../../helpers/constant';
 
 type MonitorProps = {
   today: moment.Moment;

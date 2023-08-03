@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from '../../helpers/constans';
+import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from '../../helpers/constant';
 import { User } from '../../type';
 import CalendarGrid from '../CalendarGrid';
 import DayShowComponent from '../DayShowComponent';
