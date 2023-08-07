@@ -31,5 +31,5 @@ module.exports = {
       },
     ],
   },
-  ignorePatterns: ['vite.config.ts', 'server.js'],
+  ignorePatterns: ['vite.config.ts', 'server.ts'],
 };
