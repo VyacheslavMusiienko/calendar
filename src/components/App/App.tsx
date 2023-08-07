@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { ButtonWrapper, ButtonsWrapper, EventBody, EventTitle } from '../../containers';
 import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from '../../helpers/constant';
 import { User } from '../../type';
 import CalendarGrid from '../CalendarGrid';
@@ -43,49 +44,6 @@ const FormWrapper = styled(ShadowWrapper)`
   box-shadow: unset;
 `;
 
-const EventTitle = styled('input')`
-  padding: 4px 14px;
-  font-size: 0.85rem;
-  width: 100%;
-  border: unset;
-  background-color: #1e1f21;
-  color: #dddddd;
-  outline: unset;
-  border-bottom: 1px solid #464648;
-`;
-
-const EventBody = styled('textarea')`
-  padding: 4px 14px;
-  font-size: 0.85rem;
-  width: 100%;
-  border: unset;
-  background-color: #1e1f21;
-  color: #dddddd;
-  outline: unset;
-  border-bottom: 1px solid #464648;
-  resize: none;
-  height: 60px;
-`;
-
-const ButtonsWrapper = styled('div')`
-  padding: 8px 14px;
-  display: flex;
-  justify-content: flex-end;
-`;
-
-type ButtonWrapperProps = {
-  danger?: boolean;
-};
-const ButtonWrapper = styled.button<ButtonWrapperProps>`
-  color: ${(props) => (props.danger ? '#f00' : '#27282a')};
-  border: 1px solid ${(props) => (props.danger ? '#f00' : '#27282a')};
-  border-radius: 2px;
-  cursor: pointer;
-  &:not(:last-child) {
-    margin-right: 2px;
-  }
-`;
-
 const uri = 'http://localhost:3000';
 const totalDay = 42;
 const defaultEvent = {
@@ -126,12 +84,20 @@ const App = () => {
     dayItem?: moment.Moment
   ) => {
     setMethod(methodName);
-    setShowForm(true);
     if (eventForUpdate) {
       setEvent(eventForUpdate);
     } else {
       setEvent({ ...defaultEvent, data: dayItem ? dayItem.format('X') : moment().format('X') });
     }
+  };
+
+  const openModalFormHandler = (
+    methodName: 'Update' | 'Create',
+    eventForUpdate?: User | null,
+    dayItem?: moment.Moment
+  ) => {
+    setShowForm(true);
+    openFormHandler(methodName, eventForUpdate, dayItem);
   };
 
   useEffect(() => {
@@ -274,7 +240,8 @@ const App = () => {
             today={today}
             totalDay={totalDay}
             events={events}
-            openFormHandler={openFormHandler}
+            openFormHandler={openModalFormHandler}
+            setDisplayMod={setDisplayMod}
           />
         ) : null}
         {displayMod === DISPLAY_MODE_DAY ? (
@@ -283,6 +250,12 @@ const App = () => {
             today={today}
             selectedEvent={event}
             setEvent={setEvent}
+            changeEventHandler={changeEventHandler}
+            cancelButtonHuddler={cancelButtonHuddler}
+            eventFetchHandler={eventFetchHandler}
+            removeEventHandler={removeEventHandler}
+            method={method}
+            openFormHandler={openFormHandler}
           />
         ) : null}
       </ShadowWrapper>

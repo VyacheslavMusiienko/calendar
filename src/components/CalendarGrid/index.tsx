@@ -14,9 +14,17 @@ type CalendarProps = {
     eventForUpdate?: User | null,
     dayItem?: moment.Moment
   ) => void;
+  setDisplayMod: React.Dispatch<React.SetStateAction<'month' | 'day'>>;
 };
 
-const CalendarGrid = ({ startDay, today, totalDay, events, openFormHandler }: CalendarProps) => {
+const CalendarGrid = ({
+  startDay,
+  today,
+  totalDay,
+  events,
+  openFormHandler,
+  setDisplayMod,
+}: CalendarProps) => {
   return (
     <>
       <GridWrapper isHeader>
@@ -29,6 +37,7 @@ const CalendarGrid = ({ startDay, today, totalDay, events, openFormHandler }: Ca
           events={events}
           openFormHandler={openFormHandler}
           today={today}
+          setDisplayMod={setDisplayMod}
         />
       </GridWrapper>
     </>

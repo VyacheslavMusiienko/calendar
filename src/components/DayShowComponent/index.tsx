@@ -1,5 +1,13 @@
 import styled from 'styled-components';
-import { EventItemWrapper, EventListItemWrapper, EventListWrapper } from '../../containers';
+import {
+  ButtonWrapper,
+  ButtonsWrapper,
+  EventBody,
+  EventItemWrapper,
+  EventListItemWrapper,
+  EventListWrapper,
+  EventTitle,
+} from '../../containers';
 import { isDayContainCurrentEvent } from '../../helpers';
 import { User } from '../../type';
 
@@ -7,7 +15,16 @@ type DayShowComponentsProps = {
   events: User[];
   today: moment.Moment;
   selectedEvent: User | null;
-  setEvent: React.Dispatch<React.SetStateAction<User | null>>;
+  changeEventHandler: (text: string, field: 'title' | 'description') => void;
+  cancelButtonHuddler: () => void;
+  eventFetchHandler: () => void;
+  removeEventHandler: () => void;
+  method: 'Update' | 'Create' | null;
+  openFormHandler: (
+    methodName: 'Update' | 'Create',
+    eventForUpdate?: User | null,
+    dayItem?: moment.Moment
+  ) => void;
 };
 
 const DayShowWrapper = styled('div')`
@@ -38,7 +55,17 @@ const NoEventMsg = styled('div')`
   transform: translate(50%, -50%);
 `;
 
-const DayShowComponent = ({ events, today, selectedEvent, setEvent }: DayShowComponentsProps) => {
+const DayShowComponent = ({
+  events,
+  today,
+  selectedEvent,
+  changeEventHandler,
+  cancelButtonHuddler,
+  eventFetchHandler,
+  removeEventHandler,
+  method,
+  openFormHandler,
+}: DayShowComponentsProps) => {
   const eventList = events.filter((event) => isDayContainCurrentEvent(event, today));
 
   return (
@@ -47,7 +74,9 @@ const DayShowComponent = ({ events, today, selectedEvent, setEvent }: DayShowCom
         <EventListWrapper>
           {eventList.map((event) => (
             <EventListItemWrapper key={event.id}>
-              <EventItemWrapper onClick={() => setEvent(event)}>{event.title}</EventItemWrapper>
+              <EventItemWrapper onClick={() => openFormHandler('Update', event)}>
+                {event.title}
+              </EventItemWrapper>
             </EventListItemWrapper>
           ))}
         </EventListWrapper>
@@ -56,10 +85,41 @@ const DayShowComponent = ({ events, today, selectedEvent, setEvent }: DayShowCom
       <EventFormWrapper>
         {selectedEvent ? (
           <div>
-            <h3>{selectedEvent.title}</h3>
+            <EventTitle
+              value={selectedEvent?.title}
+              onChange={(e) => changeEventHandler(e.target.value, 'title')}
+              placeholder="Title"
+            />
+            <EventBody
+              value={selectedEvent?.description}
+              onChange={(e) => changeEventHandler(e.target.value, 'description')}
+              placeholder="Description"
+            />
+            <ButtonsWrapper>
+              <ButtonWrapper type="button" onClick={cancelButtonHuddler}>
+                Cancel
+              </ButtonWrapper>
+
+              <ButtonWrapper type="button" onClick={eventFetchHandler}>
+                {method}
+              </ButtonWrapper>
+
+              {method === 'Update' ? (
+                <ButtonWrapper danger type="button" onClick={removeEventHandler}>
+                  Remove
+                </ButtonWrapper>
+              ) : null}
+            </ButtonsWrapper>
           </div>
         ) : (
-          <NoEventMsg>No event selected</NoEventMsg>
+          <>
+            <div>
+              <button type="button" onClick={() => openFormHandler('Create', null, today)}>
+                Create new event
+              </button>
+            </div>
+            <NoEventMsg>No event selected</NoEventMsg>
+          </>
         )}
       </EventFormWrapper>
     </DayShowWrapper>

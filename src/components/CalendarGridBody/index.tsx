@@ -12,6 +12,7 @@ type CalendarGridBodyProps = {
     eventForUpdate?: User | null,
     dayItem?: moment.Moment
   ) => void;
+  setDisplayMod: React.Dispatch<React.SetStateAction<'month' | 'day'>>;
 };
 
 const CalendarGridBody = ({
@@ -20,6 +21,7 @@ const CalendarGridBody = ({
   totalDay,
   events,
   openFormHandler,
+  setDisplayMod,
 }: CalendarGridBodyProps) => {
   const day = startDay.clone().subtract(1, 'day');
   const daysArray = [...Array(totalDay)].map(() => day.add(1, 'day').clone());
@@ -32,6 +34,7 @@ const CalendarGridBody = ({
         today={today}
         events={events.filter((event) => isDayContainCurrentEvent(event, dayItem))}
         openFormHandler={openFormHandler}
+        setDisplayMod={setDisplayMod}
       />
     );
   });

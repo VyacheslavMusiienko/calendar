@@ -10,6 +10,7 @@ import {
   ShowDayWrapper,
 } from '../../containers';
 import { isCurrentDay, isSelectedMonth } from '../../helpers';
+import { DISPLAY_MODE_DAY } from '../../helpers/constant';
 import { User } from '../../type';
 
 type CalendarCellProps = {
@@ -21,9 +22,16 @@ type CalendarCellProps = {
     dayItem?: moment.Moment
   ) => void;
   events: User[];
+  setDisplayMod: React.Dispatch<React.SetStateAction<'month' | 'day'>>;
 };
 
-const CalendarCell = ({ dayItem, today, openFormHandler, events }: CalendarCellProps) => {
+const CalendarCell = ({
+  dayItem,
+  today,
+  openFormHandler,
+  events,
+  setDisplayMod,
+}: CalendarCellProps) => {
   return (
     <CellWrapper
       isWeekday={dayItem.day() === 6 || dayItem.day() === 0}
@@ -49,7 +57,9 @@ const CalendarCell = ({ dayItem, today, openFormHandler, events }: CalendarCellP
           ))}
           {events.length > 2 ? (
             <EventListItemWrapper key="show more">
-              <EventItemWrapper>Show more...</EventItemWrapper>
+              <EventItemWrapper onClick={() => setDisplayMod(DISPLAY_MODE_DAY)}>
+                Show more...
+              </EventItemWrapper>
             </EventListItemWrapper>
           ) : null}
         </EventListWrapper>
