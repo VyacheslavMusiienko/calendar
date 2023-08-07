@@ -1,14 +1,14 @@
+import moment from 'moment';
 import styled from 'styled-components';
 import {
   ButtonWrapper,
   ButtonsWrapper,
   EventBody,
   EventItemWrapper,
-  EventListItemWrapper,
-  EventListWrapper,
   EventTitle,
 } from '../../containers';
 import { isDayContainCurrentEvent } from '../../helpers';
+import { ITEMS_TIME_DAY } from '../../helpers/constant';
 import { User } from '../../type';
 
 type DayShowComponentsProps = {
@@ -55,6 +55,34 @@ const NoEventMsg = styled('div')`
   transform: translate(50%, -50%);
 `;
 
+const ScaleWrapper = styled('div')`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 4px;
+  position: relative;
+`;
+
+const ScaleCellWrapper = styled('div')`
+  flex-grow: 1;
+  position: relative;
+  &:not(:last-child) {
+    border-bottom: 1px solid #464648;
+  }
+  margin-left: 32px;
+`;
+
+const ScaleCellTimeWrapper = styled('div')`
+  position: absolute;
+  left: -30px;
+  top: -8px;
+  font-size: 12px;
+`;
+
+const ScaleCellEventWrapper = styled('div')`
+  min-height: 20px;
+`;
+
 const DayShowComponent = ({
   events,
   today,
@@ -68,18 +96,40 @@ const DayShowComponent = ({
 }: DayShowComponentsProps) => {
   const eventList = events.filter((event) => isDayContainCurrentEvent(event, today));
 
+  const cells = [...new Array(ITEMS_TIME_DAY)].map((_, index) => {
+    const temp: User[] = [];
+
+    eventList.forEach((event) => {
+      const time = moment.unix(Number(event.data)).format('H');
+      if (Number(time) === index) {
+        temp.push(event);
+      }
+    });
+
+    return temp;
+  });
+
   return (
     <DayShowWrapper>
       <EventsListWrapper>
-        <EventListWrapper>
-          {eventList.map((event) => (
-            <EventListItemWrapper key={event.id}>
-              <EventItemWrapper onClick={() => openFormHandler('Update', event)}>
-                {event.title}
-              </EventItemWrapper>
-            </EventListItemWrapper>
+        <ScaleWrapper>
+          {cells.map((eventsList, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <ScaleCellWrapper key={index}>
+              <ScaleCellTimeWrapper>
+                {index ? <>{`${index}`.padStart(2, '0')}:00</> : null}
+              </ScaleCellTimeWrapper>
+
+              <ScaleCellEventWrapper>
+                {eventsList.map((event) => (
+                  <EventItemWrapper key={event.id} onClick={() => openFormHandler('Update', event)}>
+                    {event.title}
+                  </EventItemWrapper>
+                ))}
+              </ScaleCellEventWrapper>
+            </ScaleCellWrapper>
           ))}
-        </EventListWrapper>
+        </ScaleWrapper>
       </EventsListWrapper>
 
       <EventFormWrapper>

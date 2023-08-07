@@ -2,7 +2,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ButtonWrapper, ButtonsWrapper, EventBody, EventTitle } from '../../containers';
-import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from '../../helpers/constant';
+import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH, TOTAL_DAY, URI } from '../../helpers/constant';
 import { User } from '../../type';
 import CalendarGrid from '../CalendarGrid';
 import DayShowComponent from '../DayShowComponent';
@@ -43,9 +43,6 @@ const FormWrapper = styled(ShadowWrapper)`
   color: #dddddd;
   box-shadow: unset;
 `;
-
-const uri = 'http://localhost:3000';
-const totalDay = 42;
 const defaultEvent = {
   title: '',
   description: '',
@@ -76,7 +73,7 @@ const App = () => {
   };
 
   const startDayQuery = startDay.clone().format('X');
-  const endDayQuery = startDay.clone().add(totalDay, 'days').format('X');
+  const endDayQuery = startDay.clone().add(TOTAL_DAY, 'days').format('X');
 
   const openFormHandler = (
     methodName: 'Update' | 'Create',
@@ -101,7 +98,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetch(`${uri}/events?data_gte=${startDayQuery}&data_lte=${endDayQuery}`)
+    fetch(`${URI}/events?data_gte=${startDayQuery}&data_lte=${endDayQuery}`)
       .then((res) => res.json())
       .then((res) => {
         setEvents(res);
@@ -132,7 +129,7 @@ const App = () => {
       return;
     }
 
-    const fetchUri = method === 'Update' ? `${uri}/events/${event.id}` : `${uri}/events`;
+    const fetchUri = method === 'Update' ? `${URI}/events/${event.id}` : `${URI}/events`;
     const httpMethod = method === 'Update' ? 'PATCH' : 'POST';
 
     const eventData = JSON.stringify({
@@ -171,7 +168,7 @@ const App = () => {
       console.error('Event data is null.');
       return;
     }
-    const fetchUri = `${uri}/events/${event.id}`;
+    const fetchUri = `${URI}/events/${event.id}`;
     const httpMethod = 'DELETE';
 
     fetch(fetchUri, {
@@ -238,7 +235,7 @@ const App = () => {
           <CalendarGrid
             startDay={startDay}
             today={today}
-            totalDay={totalDay}
+            totalDay={TOTAL_DAY}
             events={events}
             openFormHandler={openModalFormHandler}
             setDisplayMod={setDisplayMod}
@@ -249,7 +246,6 @@ const App = () => {
             events={events}
             today={today}
             selectedEvent={event}
-            setEvent={setEvent}
             changeEventHandler={changeEventHandler}
             cancelButtonHuddler={cancelButtonHuddler}
             eventFetchHandler={eventFetchHandler}
