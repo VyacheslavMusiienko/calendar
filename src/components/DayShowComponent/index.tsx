@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { useState } from 'react';
 import styled from 'styled-components';
 import {
   ButtonWrapper,
@@ -15,7 +16,7 @@ type DayShowComponentsProps = {
   events: User[];
   today: moment.Moment;
   selectedEvent: User | null;
-  changeEventHandler: (text: string, field: 'title' | 'description') => void;
+  changeEventHandler: (text: string, field: 'title' | 'description' | 'data') => void;
   cancelButtonHuddler: () => void;
   eventFetchHandler: () => void;
   removeEventHandler: () => void;
@@ -83,6 +84,43 @@ const ScaleCellEventWrapper = styled('div')`
   min-height: 20px;
 `;
 
+const SelectEventTimeWrapper = styled('div')`
+  padding: 8px 14px;
+  border-bottom: 1px solid #464648;
+  display: flex;
+`;
+
+const ListOfHours = styled('ul')`
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  height: 60px;
+  overflow-y: scroll;
+  color: #000;
+  position: absolute;
+  left: 2px;
+  background-color: rgb(239, 239, 239);
+`;
+
+const PositionRelative = styled('div')`
+  position: relative;
+`;
+
+const HoursButton = styled('button')`
+  border: none;
+  background-color: unset;
+  cursor: pointer;
+`;
+
+const RedLine = styled('div')`
+  background-color: #f00;
+  height: 1px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: ${(props: { position: number }) => props.position}%;
+`;
+
 const DayShowComponent = ({
   events,
   today,
@@ -94,6 +132,8 @@ const DayShowComponent = ({
   method,
   openFormHandler,
 }: DayShowComponentsProps) => {
+  const [showTimePiker, setShowTimePiker] = useState(false);
+
   const eventList = events.filter((event) => isDayContainCurrentEvent(event, today));
 
   const cells = [...new Array(ITEMS_TIME_DAY)].map((_, index) => {
@@ -108,6 +148,15 @@ const DayShowComponent = ({
 
     return temp;
   });
+
+  const setTimeOfEvent = (index: number) => {
+    setShowTimePiker(false);
+
+    if (selectedEvent?.data) {
+      const time = moment.unix(Number(selectedEvent.data)).hour(index).format('X');
+      changeEventHandler(time, 'data');
+    }
+  };
 
   return (
     <DayShowWrapper>
@@ -140,6 +189,32 @@ const DayShowComponent = ({
               onChange={(e) => changeEventHandler(e.target.value, 'title')}
               placeholder="Title"
             />
+            <SelectEventTimeWrapper>
+              <PositionRelative>
+                <button type="button">
+                  {moment.unix(Number(selectedEvent.data)).format('dddd, D MMMM ')}
+                </button>
+              </PositionRelative>
+
+              <PositionRelative>
+                <button type="button" onClick={() => setShowTimePiker((prevState) => !prevState)}>
+                  {moment.unix(Number(selectedEvent.data)).format('HH : mm')}
+                </button>
+
+                {showTimePiker ? (
+                  <ListOfHours>
+                    {[...new Array(ITEMS_TIME_DAY)].map((_, index) => (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li key={index}>
+                        <HoursButton type="button" onClick={() => setTimeOfEvent(index)}>
+                          {`${index}`.padStart(2, '0')}:00
+                        </HoursButton>
+                      </li>
+                    ))}
+                  </ListOfHours>
+                ) : null}
+              </PositionRelative>
+            </SelectEventTimeWrapper>
             <EventBody
               value={selectedEvent?.description}
               onChange={(e) => changeEventHandler(e.target.value, 'description')}
