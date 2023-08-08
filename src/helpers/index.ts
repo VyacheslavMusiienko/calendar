@@ -8,5 +8,5 @@ export const isSelectedMonth = (currentMonth: moment.Moment, today: moment.Momen
   today.isSame(currentMonth, 'month');
 
 export const isDayContainCurrentEvent = (event: User, dayItem: moment.Moment) =>
-  event.data >= dayItem.startOf('day').format('X') &&
-  event.data <= dayItem.clone().endOf('day').format('X');
+  event.date >= dayItem.startOf('day').format('X') &&
+  event.date <= dayItem.clone().endOf('day').format('X');

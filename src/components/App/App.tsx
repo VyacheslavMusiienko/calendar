@@ -46,7 +46,7 @@ const FormWrapper = styled(ShadowWrapper)`
 const defaultEvent = {
   title: '',
   description: '',
-  data: moment().format('X'),
+  date: moment().format('X'),
 };
 
 const App = () => {
@@ -84,7 +84,7 @@ const App = () => {
     if (eventForUpdate) {
       setEvent(eventForUpdate);
     } else {
-      setEvent({ ...defaultEvent, data: dayItem ? dayItem.format('X') : moment().format('X') });
+      setEvent({ ...defaultEvent, date: dayItem ? dayItem.format('X') : moment().format('X') });
     }
   };
 
@@ -98,7 +98,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetch(`${URI}/events?data_gte=${startDayQuery}&data_lte=${endDayQuery}`)
+    fetch(`${URI}/events?date_gte=${startDayQuery}&date_lte=${endDayQuery}`)
       .then((res) => res.json())
       .then((res) => {
         setEvents(res);
@@ -125,17 +125,17 @@ const App = () => {
 
   const eventFetchHandler = () => {
     if (!event) {
-      console.error('Event data is null.');
+      console.error('Event date is null.');
       return;
     }
 
     const fetchUri = method === 'Update' ? `${URI}/events/${event.id}` : `${URI}/events`;
     const httpMethod = method === 'Update' ? 'PATCH' : 'POST';
 
-    const eventData = JSON.stringify({
+    const eventdate = JSON.stringify({
       title: event.title,
       description: event.description,
-      data: event.data,
+      date: event.date,
     });
 
     fetch(fetchUri, {
@@ -143,7 +143,7 @@ const App = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: eventData,
+      body: eventdate,
     })
       .then((res) => res.json())
       .then((res) => {
@@ -165,7 +165,7 @@ const App = () => {
 
   const removeEventHandler = () => {
     if (!event) {
-      console.error('Event data is null.');
+      console.error('Event date is null.');
       return;
     }
     const fetchUri = `${URI}/events/${event.id}`;

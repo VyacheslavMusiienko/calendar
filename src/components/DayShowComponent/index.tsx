@@ -16,7 +16,7 @@ type DayShowComponentsProps = {
   events: User[];
   today: moment.Moment;
   selectedEvent: User | null;
-  changeEventHandler: (text: string, field: 'title' | 'description' | 'data') => void;
+  changeEventHandler: (text: string, field: 'title' | 'description' | 'date') => void;
   cancelButtonHuddler: () => void;
   eventFetchHandler: () => void;
   removeEventHandler: () => void;
@@ -140,7 +140,7 @@ const DayShowComponent = ({
     const temp: User[] = [];
 
     eventList.forEach((event) => {
-      const time = moment.unix(Number(event.data)).format('H');
+      const time = moment.unix(Number(event.date)).format('H');
       if (Number(time) === index) {
         temp.push(event);
       }
@@ -152,9 +152,9 @@ const DayShowComponent = ({
   const setTimeOfEvent = (index: number) => {
     setShowTimePiker(false);
 
-    if (selectedEvent?.data) {
-      const time = moment.unix(Number(selectedEvent.data)).hour(index).format('X');
-      changeEventHandler(time, 'data');
+    if (selectedEvent?.date) {
+      const time = moment.unix(Number(selectedEvent.date)).hour(index).format('X');
+      changeEventHandler(time, 'date');
     }
   };
 
@@ -192,13 +192,13 @@ const DayShowComponent = ({
             <SelectEventTimeWrapper>
               <PositionRelative>
                 <button type="button">
-                  {moment.unix(Number(selectedEvent.data)).format('dddd, D MMMM ')}
+                  {moment.unix(Number(selectedEvent.date)).format('dddd, D MMMM ')}
                 </button>
               </PositionRelative>
 
               <PositionRelative>
                 <button type="button" onClick={() => setShowTimePiker((prevState) => !prevState)}>
-                  {moment.unix(Number(selectedEvent.data)).format('HH : mm')}
+                  {moment.unix(Number(selectedEvent.date)).format('HH : mm')}
                 </button>
 
                 {showTimePiker ? (

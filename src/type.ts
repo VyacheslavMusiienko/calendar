@@ -4,7 +4,7 @@ export interface User {
   id?: number;
   title: string;
   description: string;
-  data: string;
+  date: string;
 }
 
 export type CellWrapperProps = {
