@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
   ButtonWrapper,
@@ -8,8 +8,8 @@ import {
   EventItemWrapper,
   EventTitle,
 } from '../../containers';
-import { isDayContainCurrentEvent } from '../../helpers';
-import { ITEMS_TIME_DAY } from '../../helpers/constant';
+import { isDayContainCurrentEvent, isDayContainCurrentTimestamp } from '../../helpers';
+import { ITEMS_TIME_DAY, TIME_REFRESH_INTERVAL_REDLINE } from '../../helpers/constant';
 import { User } from '../../type';
 
 type DayShowComponentsProps = {
@@ -158,10 +158,25 @@ const DayShowComponent = ({
     }
   };
 
+  const getRedlinePosition = () =>
+    ((Number(moment().format('X')) - Number(today.format('X'))) / 86400) * 100;
+
+  const [, setCount] = useState(0);
+  useEffect(() => {
+    const timerHuddler = setInterval(() => {
+      setCount((prevState) => prevState + 1);
+    }, TIME_REFRESH_INTERVAL_REDLINE);
+
+    return () => clearInterval(timerHuddler);
+  }, []);
+
   return (
     <DayShowWrapper>
       <EventsListWrapper>
         <ScaleWrapper>
+          {isDayContainCurrentTimestamp(moment().format('X'), today) ? (
+            <RedLine position={getRedlinePosition()} />
+          ) : null}
           {cells.map((eventsList, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <ScaleCellWrapper key={index}>
