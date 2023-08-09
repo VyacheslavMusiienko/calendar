@@ -110,7 +110,7 @@ const App = () => {
     setEvent(null);
   };
 
-  const changeEventHandler = (text: string, field: 'title' | 'description') => {
+  const changeEventHandler = (text: string, field: 'title' | 'description' | 'date') => {
     setEvent((prevState) => {
       if (prevState === null) {
         return null;
@@ -235,7 +235,6 @@ const App = () => {
           <CalendarGrid
             startDay={startDay}
             today={today}
-            totalDay={TOTAL_DAY}
             events={events}
             openFormHandler={openModalFormHandler}
             setDisplayMod={setDisplayMod}

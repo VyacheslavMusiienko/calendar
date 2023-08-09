@@ -7,7 +7,6 @@ import CalendarGridHeader from '../CalendarGridHeader';
 type CalendarProps = {
   startDay: moment.Moment;
   today: moment.Moment;
-  totalDay: number;
   events: User[];
   openFormHandler: (
     method: 'Update' | 'Create',
@@ -20,7 +19,6 @@ type CalendarProps = {
 const CalendarGrid = ({
   startDay,
   today,
-  totalDay,
   events,
   openFormHandler,
   setDisplayMod,
@@ -33,7 +31,6 @@ const CalendarGrid = ({
       <GridWrapper>
         <CalendarGridBody
           startDay={startDay}
-          totalDay={totalDay}
           events={events}
           openFormHandler={openFormHandler}
           today={today}
