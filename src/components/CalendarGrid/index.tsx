@@ -5,7 +5,6 @@ import CalendarGridBody from '../CalendarGridBody';
 import CalendarGridHeader from '../CalendarGridHeader';
 
 type CalendarProps = {
-  startDay: moment.Moment;
   events: User[];
   openFormHandler: (
     method: 'Update' | 'Create',
@@ -14,14 +13,14 @@ type CalendarProps = {
   ) => void;
 };
 
-const CalendarGrid = ({ startDay, events, openFormHandler }: CalendarProps) => {
+const CalendarGrid = ({ events, openFormHandler }: CalendarProps) => {
   return (
     <>
       <GridWrapper isHeader>
         <CalendarGridHeader />
       </GridWrapper>
       <GridWrapper>
-        <CalendarGridBody startDay={startDay} events={events} openFormHandler={openFormHandler} />
+        <CalendarGridBody events={events} openFormHandler={openFormHandler} />
       </GridWrapper>
     </>
   );

@@ -1,10 +1,11 @@
+import moment from 'moment';
 import { isDayContainCurrentEvent } from '../../helpers';
 import { TOTAL_DAY } from '../../helpers/constant';
+import { useAppSelector } from '../../hooks/redux';
 import { User } from '../../type';
 import CalendarCell from '../CalendarCell';
 
 type CalendarGridBodyProps = {
-  startDay: moment.Moment;
   events: User[];
   openFormHandler: (
     method: 'Update' | 'Create',
@@ -13,8 +14,9 @@ type CalendarGridBodyProps = {
   ) => void;
 };
 
-const CalendarGridBody = ({ startDay, events, openFormHandler }: CalendarGridBodyProps) => {
-  const day = startDay.clone().subtract(1, 'day');
+const CalendarGridBody = ({ events, openFormHandler }: CalendarGridBodyProps) => {
+  const { today } = useAppSelector((state) => state.dateReducer);
+  const day = moment(today).startOf('month').startOf('week').subtract(1, 'day');
   const daysArray = [...Array(TOTAL_DAY)].map(() => day.add(1, 'day').clone());
 
   return daysArray.map((dayItem) => {

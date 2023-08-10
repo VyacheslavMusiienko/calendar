@@ -1,49 +1,14 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { ButtonWrapper, ButtonsWrapper, EventBody, EventTitle } from '../../containers';
+import { ShadowWrapper } from '../../containers';
 import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH, TOTAL_DAY, URI } from '../../helpers/constant';
 import { useAppSelector } from '../../hooks/redux';
 import { User } from '../../type';
 import CalendarGrid from '../CalendarGrid';
 import DayShowComponent from '../DayShowComponent';
 import Monitor from '../Monitor';
+import CalendarForm from '../CalendarForm';
 
-const ShadowWrapper = styled('div')`
-  min-width: 850px;
-  height: 665px;
-  border-top: 1px solid #737374;
-  border-left: 1px solid #464648;
-  border-right: 1px solid #464648;
-  border-bottom: 2px solid #464648;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 0 0 1px #1a1a1a, 0 8px 20px 6px #888;
-  display: flex;
-  flex-direction: column;
-`;
-
-const FormPositionWrapper = styled('div')`
-  position: absolute;
-  z-index: 100;
-  background-color: rgba(0, 0, 0, 0.35);
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const FormWrapper = styled(ShadowWrapper)`
-  width: 320px;
-  min-width: 320px;
-  height: 132px;
-  background-color: #1e1f21;
-  color: #dddddd;
-  box-shadow: unset;
-`;
 const defaultEvent = {
   title: '',
   description: '',
@@ -55,8 +20,6 @@ const App = () => {
 
   const { today } = useAppSelector((state) => state.dateReducer);
   const { displayMod } = useAppSelector((state) => state.displayModeReducer);
-
-  console.log(displayMod);
 
   const [events, setEvents] = useState<User[]>([]);
   const [event, setEvent] = useState<User | null>(null);
@@ -170,7 +133,6 @@ const App = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setEvents((prevState) => prevState.filter((eventEl) => eventEl.id !== event.id));
         cancelButtonHuddler();
       })
@@ -182,46 +144,22 @@ const App = () => {
   return (
     <>
       {isShowForm ? (
-        <FormPositionWrapper onClick={cancelButtonHuddler}>
-          <FormWrapper onClick={(e) => e.stopPropagation()}>
-            <EventTitle
-              value={event?.title}
-              onChange={(e) => changeEventHandler(e.target.value, 'title')}
-              placeholder="Title"
-            />
-            <EventBody
-              value={event?.description}
-              onChange={(e) => changeEventHandler(e.target.value, 'description')}
-              placeholder="Description"
-            />
-            <ButtonsWrapper>
-              <ButtonWrapper type="button" onClick={cancelButtonHuddler}>
-                Cancel
-              </ButtonWrapper>
-
-              <ButtonWrapper type="button" onClick={eventFetchHandler}>
-                {method}
-              </ButtonWrapper>
-
-              {method === 'Update' ? (
-                <ButtonWrapper danger type="button" onClick={removeEventHandler}>
-                  Remove
-                </ButtonWrapper>
-              ) : null}
-            </ButtonsWrapper>
-          </FormWrapper>
-        </FormPositionWrapper>
+        <CalendarForm
+          cancelButtonHuddler={cancelButtonHuddler}
+          event={event}
+          changeEventHandler={changeEventHandler}
+          eventFetchHandler={eventFetchHandler}
+          removeEventHandler={removeEventHandler}
+          method={method}
+        />
       ) : null}
       <ShadowWrapper>
-        {/* <Header /> */}
         <Monitor />
+
         {displayMod === DISPLAY_MODE_MONTH ? (
-          <CalendarGrid
-            startDay={startDay}
-            events={events}
-            openFormHandler={openModalFormHandler}
-          />
+          <CalendarGrid events={events} openFormHandler={openModalFormHandler} />
         ) : null}
+
         {displayMod === DISPLAY_MODE_DAY ? (
           <DayShowComponent
             events={events}

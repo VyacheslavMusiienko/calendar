@@ -159,8 +159,9 @@ const DayShowComponent = ({
     }
   };
 
-  const getRedlinePosition = () =>
-    ((Number(moment().format('X')) - Number(moment(today).format('X'))) / 86400) * 100;
+  const getRedlinePosition = () => {
+    return ((moment().unix() - moment(today).startOf('day').unix()) / 86400) * 100;
+  };
 
   const [, setCount] = useState(0);
   useEffect(() => {
