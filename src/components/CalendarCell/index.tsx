@@ -12,10 +12,10 @@ import {
 import { isCurrentDay, isSelectedMonth } from '../../helpers';
 import { DISPLAY_MODE_DAY } from '../../helpers/constant';
 import { User } from '../../type';
+import { useAppSelector } from '../../hooks/redux';
 
 type CalendarCellProps = {
   dayItem: moment.Moment;
-  today: moment.Moment;
   openFormHandler: (
     method: 'Update' | 'Create',
     eventForUpdate?: User | null,
@@ -25,13 +25,9 @@ type CalendarCellProps = {
   setDisplayMod: React.Dispatch<React.SetStateAction<'month' | 'day'>>;
 };
 
-const CalendarCell = ({
-  dayItem,
-  today,
-  openFormHandler,
-  events,
-  setDisplayMod,
-}: CalendarCellProps) => {
+const CalendarCell = ({ dayItem, openFormHandler, events, setDisplayMod }: CalendarCellProps) => {
+  const { today } = useAppSelector((state) => state.dateReducer);
+
   return (
     <CellWrapper
       isWeekday={dayItem.day() === 6 || dayItem.day() === 0}

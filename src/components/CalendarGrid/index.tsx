@@ -6,7 +6,6 @@ import CalendarGridHeader from '../CalendarGridHeader';
 
 type CalendarProps = {
   startDay: moment.Moment;
-  today: moment.Moment;
   events: User[];
   openFormHandler: (
     method: 'Update' | 'Create',
@@ -16,13 +15,7 @@ type CalendarProps = {
   setDisplayMod: React.Dispatch<React.SetStateAction<'month' | 'day'>>;
 };
 
-const CalendarGrid = ({
-  startDay,
-  today,
-  events,
-  openFormHandler,
-  setDisplayMod,
-}: CalendarProps) => {
+const CalendarGrid = ({ startDay, events, openFormHandler, setDisplayMod }: CalendarProps) => {
   return (
     <>
       <GridWrapper isHeader>
@@ -33,7 +26,6 @@ const CalendarGrid = ({
           startDay={startDay}
           events={events}
           openFormHandler={openFormHandler}
-          today={today}
           setDisplayMod={setDisplayMod}
         />
       </GridWrapper>

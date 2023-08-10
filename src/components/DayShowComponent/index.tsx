@@ -10,11 +10,11 @@ import {
 } from '../../containers';
 import { isDayContainCurrentEvent, isDayContainCurrentTimestamp } from '../../helpers';
 import { ITEMS_TIME_DAY, TIME_REFRESH_INTERVAL_REDLINE } from '../../helpers/constant';
+import { useAppSelector } from '../../hooks/redux';
 import { User } from '../../type';
 
 type DayShowComponentsProps = {
   events: User[];
-  today: moment.Moment;
   selectedEvent: User | null;
   changeEventHandler: (text: string, field: 'title' | 'description' | 'date') => void;
   cancelButtonHuddler: () => void;
@@ -123,7 +123,6 @@ const RedLine = styled('div')`
 
 const DayShowComponent = ({
   events,
-  today,
   selectedEvent,
   changeEventHandler,
   cancelButtonHuddler,
@@ -132,6 +131,8 @@ const DayShowComponent = ({
   method,
   openFormHandler,
 }: DayShowComponentsProps) => {
+  const { today } = useAppSelector((state) => state.dateReducer);
+
   const [showTimePiker, setShowTimePiker] = useState(false);
 
   const eventList = events.filter((event) => isDayContainCurrentEvent(event, today));

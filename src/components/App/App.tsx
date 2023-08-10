@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ButtonWrapper, ButtonsWrapper, EventBody, EventTitle } from '../../containers';
 import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH, TOTAL_DAY, URI } from '../../helpers/constant';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { updateToday } from '../../store/reducer/dateSlice';
 import { User } from '../../type';
 import CalendarGrid from '../CalendarGrid';
 import DayShowComponent from '../DayShowComponent';
@@ -54,24 +56,20 @@ const App = () => {
     DISPLAY_MODE_MONTH
   );
 
-  moment.updateLocale('en', { week: { dow: 1 } });
+  const dispatch = useAppDispatch();
 
-  const [today, setToday] = useState<moment.Moment>(moment());
+  const { today } = useAppSelector((state) => state.dateReducer);
+
   const [events, setEvents] = useState<User[]>([]);
   const [event, setEvent] = useState<User | null>(null);
   const [isShowForm, setShowForm] = useState<boolean>(false);
   const [method, setMethod] = useState<'Update' | 'Create' | null>(null);
 
+  const prevHuddler = () => dispatch(updateToday(today.clone().subtract(1, displayMod)));
+  const todayHuddler = () => dispatch(updateToday(moment()));
+  const nextHuddler = () => dispatch(updateToday(today.clone().add(1, displayMod)));
+
   const startDay = today.clone().startOf('month').startOf('week');
-
-  const prevHuddler = () => {
-    setToday((prev) => prev.clone().subtract(1, displayMod));
-  };
-  const todayHuddler = () => setToday(moment());
-  const nextHuddler = () => {
-    setToday((prev) => prev.clone().add(1, displayMod));
-  };
-
   const startDayQuery = startDay.clone().format('X');
   const endDayQuery = startDay.clone().add(TOTAL_DAY, 'days').format('X');
 
@@ -224,7 +222,6 @@ const App = () => {
       <ShadowWrapper>
         {/* <Header /> */}
         <Monitor
-          today={today}
           prevHuddler={prevHuddler}
           todayHuddler={todayHuddler}
           nextHuddler={nextHuddler}
@@ -234,7 +231,6 @@ const App = () => {
         {displayMod === DISPLAY_MODE_MONTH ? (
           <CalendarGrid
             startDay={startDay}
-            today={today}
             events={events}
             openFormHandler={openModalFormHandler}
             setDisplayMod={setDisplayMod}
@@ -243,7 +239,6 @@ const App = () => {
         {displayMod === DISPLAY_MODE_DAY ? (
           <DayShowComponent
             events={events}
-            today={today}
             selectedEvent={event}
             changeEventHandler={changeEventHandler}
             cancelButtonHuddler={cancelButtonHuddler}

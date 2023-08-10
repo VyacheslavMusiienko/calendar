@@ -1,9 +1,8 @@
-import moment from 'moment';
 import styled from 'styled-components';
 import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from '../../helpers/constant';
+import { useAppSelector } from '../../hooks/redux';
 
 type MonitorProps = {
-  today: moment.Moment;
   prevHuddler: () => void;
   todayHuddler: () => void;
   nextHuddler: () => void;
@@ -65,13 +64,14 @@ const TodayButton = styled(ButtonWrapper)`
 `;
 
 const Monitor = ({
-  today,
   prevHuddler,
   todayHuddler,
   nextHuddler,
   setDisplayMod,
   displayMod,
 }: MonitorProps) => {
+  const { today } = useAppSelector((state) => state.dateReducer);
+
   return (
     <DivWrapper>
       <div>

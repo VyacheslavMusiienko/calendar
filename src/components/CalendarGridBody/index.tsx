@@ -5,7 +5,6 @@ import CalendarCell from '../CalendarCell';
 
 type CalendarGridBodyProps = {
   startDay: moment.Moment;
-  today: moment.Moment;
   events: User[];
   openFormHandler: (
     method: 'Update' | 'Create',
@@ -17,13 +16,11 @@ type CalendarGridBodyProps = {
 
 const CalendarGridBody = ({
   startDay,
-  today,
   events,
   openFormHandler,
   setDisplayMod,
 }: CalendarGridBodyProps) => {
   const day = startDay.clone().subtract(1, 'day');
-  console.log(day);
   const daysArray = [...Array(TOTAL_DAY)].map(() => day.add(1, 'day').clone());
 
   return daysArray.map((dayItem) => {
@@ -31,7 +28,6 @@ const CalendarGridBody = ({
       <CalendarCell
         key={dayItem.format('DDMMYYYY')}
         dayItem={dayItem}
-        today={today}
         events={events.filter((event) => isDayContainCurrentEvent(event, dayItem))}
         openFormHandler={openFormHandler}
         setDisplayMod={setDisplayMod}
