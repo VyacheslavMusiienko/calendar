@@ -1,17 +1,15 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import dateReducer from './reducer/dateSlice';
+import displayModeReducer from './reducer/displayModSlice';
 
 const rootReducer = combineReducers({
   dateReducer,
+  displayModeReducer,
 });
 
 export const setupStore = () => {
   return configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: false,
-      }),
   });
 };
 

@@ -135,7 +135,7 @@ const DayShowComponent = ({
 
   const [showTimePiker, setShowTimePiker] = useState(false);
 
-  const eventList = events.filter((event) => isDayContainCurrentEvent(event, today));
+  const eventList = events.filter((event) => isDayContainCurrentEvent(event, moment(today)));
 
   const cells = [...new Array(ITEMS_TIME_DAY)].map((_, index) => {
     const temp: User[] = [];
@@ -160,7 +160,7 @@ const DayShowComponent = ({
   };
 
   const getRedlinePosition = () =>
-    ((Number(moment().format('X')) - Number(today.format('X'))) / 86400) * 100;
+    ((Number(moment().format('X')) - Number(moment(today).format('X'))) / 86400) * 100;
 
   const [, setCount] = useState(0);
   useEffect(() => {
@@ -175,7 +175,7 @@ const DayShowComponent = ({
     <DayShowWrapper>
       <EventsListWrapper>
         <ScaleWrapper>
-          {isDayContainCurrentTimestamp(moment().format('X'), today) ? (
+          {isDayContainCurrentTimestamp(moment().format('X'), moment(today)) ? (
             <RedLine position={getRedlinePosition()} />
           ) : null}
           {cells.map((eventsList, index) => (
@@ -255,7 +255,7 @@ const DayShowComponent = ({
         ) : (
           <>
             <div>
-              <button type="button" onClick={() => openFormHandler('Create', null, today)}>
+              <button type="button" onClick={() => openFormHandler('Create', null, moment(today))}>
                 Create new event
               </button>
             </div>

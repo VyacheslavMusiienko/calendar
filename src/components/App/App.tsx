@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ButtonWrapper, ButtonsWrapper, EventBody, EventTitle } from '../../containers';
 import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH, TOTAL_DAY, URI } from '../../helpers/constant';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { updateToday } from '../../store/reducer/dateSlice';
+import { useAppSelector } from '../../hooks/redux';
 import { User } from '../../type';
 import CalendarGrid from '../CalendarGrid';
 import DayShowComponent from '../DayShowComponent';
@@ -52,24 +51,19 @@ const defaultEvent = {
 };
 
 const App = () => {
-  const [displayMod, setDisplayMod] = useState<typeof DISPLAY_MODE_MONTH | typeof DISPLAY_MODE_DAY>(
-    DISPLAY_MODE_MONTH
-  );
-
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   const { today } = useAppSelector((state) => state.dateReducer);
+  const { displayMod } = useAppSelector((state) => state.displayModeReducer);
+
+  console.log(displayMod);
 
   const [events, setEvents] = useState<User[]>([]);
   const [event, setEvent] = useState<User | null>(null);
   const [isShowForm, setShowForm] = useState<boolean>(false);
   const [method, setMethod] = useState<'Update' | 'Create' | null>(null);
 
-  const prevHuddler = () => dispatch(updateToday(today.clone().subtract(1, displayMod)));
-  const todayHuddler = () => dispatch(updateToday(moment()));
-  const nextHuddler = () => dispatch(updateToday(today.clone().add(1, displayMod)));
-
-  const startDay = today.clone().startOf('month').startOf('week');
+  const startDay = moment(today).startOf('month').startOf('week');
   const startDayQuery = startDay.clone().format('X');
   const endDayQuery = startDay.clone().add(TOTAL_DAY, 'days').format('X');
 
@@ -130,7 +124,7 @@ const App = () => {
     const fetchUri = method === 'Update' ? `${URI}/events/${event.id}` : `${URI}/events`;
     const httpMethod = method === 'Update' ? 'PATCH' : 'POST';
 
-    const eventdate = JSON.stringify({
+    const eventDate = JSON.stringify({
       title: event.title,
       description: event.description,
       date: event.date,
@@ -141,11 +135,10 @@ const App = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: eventdate,
+      body: eventDate,
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (method === 'Update') {
           setEvents((prevState) =>
             prevState.map((eventEl) => (eventEl.id === res.id ? res : eventEl))
@@ -221,19 +214,12 @@ const App = () => {
       ) : null}
       <ShadowWrapper>
         {/* <Header /> */}
-        <Monitor
-          prevHuddler={prevHuddler}
-          todayHuddler={todayHuddler}
-          nextHuddler={nextHuddler}
-          setDisplayMod={setDisplayMod}
-          displayMod={displayMod}
-        />
+        <Monitor />
         {displayMod === DISPLAY_MODE_MONTH ? (
           <CalendarGrid
             startDay={startDay}
             events={events}
             openFormHandler={openModalFormHandler}
-            setDisplayMod={setDisplayMod}
           />
         ) : null}
         {displayMod === DISPLAY_MODE_DAY ? (

@@ -11,8 +11,9 @@ import {
 } from '../../containers';
 import { isCurrentDay, isSelectedMonth } from '../../helpers';
 import { DISPLAY_MODE_DAY } from '../../helpers/constant';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { User } from '../../type';
-import { useAppSelector } from '../../hooks/redux';
+import { updateDisplayMod } from '../../store/reducer/displayModSlice';
 
 type CalendarCellProps = {
   dayItem: moment.Moment;
@@ -22,16 +23,16 @@ type CalendarCellProps = {
     dayItem?: moment.Moment
   ) => void;
   events: User[];
-  setDisplayMod: React.Dispatch<React.SetStateAction<'month' | 'day'>>;
 };
 
-const CalendarCell = ({ dayItem, openFormHandler, events, setDisplayMod }: CalendarCellProps) => {
+const CalendarCell = ({ dayItem, openFormHandler, events }: CalendarCellProps) => {
+  const dispatch = useAppDispatch();
   const { today } = useAppSelector((state) => state.dateReducer);
 
   return (
     <CellWrapper
       isWeekday={dayItem.day() === 6 || dayItem.day() === 0}
-      isSelectedMonth={isSelectedMonth(dayItem, today)}
+      isSelectedMonth={isSelectedMonth(dayItem, moment(today))}
     >
       <RowInCell justifyContent="flex-end">
         <ShowDayWrapper>
@@ -53,7 +54,7 @@ const CalendarCell = ({ dayItem, openFormHandler, events, setDisplayMod }: Calen
           ))}
           {events.length > 2 ? (
             <EventListItemWrapper key="show more">
-              <EventItemWrapper onClick={() => setDisplayMod(DISPLAY_MODE_DAY)}>
+              <EventItemWrapper onClick={() => dispatch(updateDisplayMod(DISPLAY_MODE_DAY))}>
                 Show more...
               </EventItemWrapper>
             </EventListItemWrapper>

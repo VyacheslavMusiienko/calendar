@@ -1,14 +1,9 @@
+import moment from 'moment';
 import styled from 'styled-components';
 import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH } from '../../helpers/constant';
-import { useAppSelector } from '../../hooks/redux';
-
-type MonitorProps = {
-  prevHuddler: () => void;
-  todayHuddler: () => void;
-  nextHuddler: () => void;
-  setDisplayMod: React.Dispatch<React.SetStateAction<'month' | 'day'>>;
-  displayMod: 'month' | 'day';
-};
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { updateToday } from '../../store/reducer/dateSlice';
+import { updateDisplayMod } from '../../store/reducer/displayModSlice';
 
 const DivWrapper = styled('div')`
   display: flex;
@@ -63,30 +58,32 @@ const TodayButton = styled(ButtonWrapper)`
   font-weight: bold;
 `;
 
-const Monitor = ({
-  prevHuddler,
-  todayHuddler,
-  nextHuddler,
-  setDisplayMod,
-  displayMod,
-}: MonitorProps) => {
+const Monitor = () => {
+  const dispatch = useAppDispatch();
   const { today } = useAppSelector((state) => state.dateReducer);
+  const { displayMod } = useAppSelector((state) => state.displayModeReducer);
+
+  const prevHuddler = () => dispatch(updateToday(moment(today).subtract(1, displayMod).format()));
+  const todayHuddler = () => dispatch(updateToday(moment().format()));
+  const nextHuddler = () => dispatch(updateToday(moment(today).add(1, displayMod).format()));
 
   return (
     <DivWrapper>
       <div>
-        {displayMod === DISPLAY_MODE_DAY ? <TextWrapper>{today.format('DD')}</TextWrapper> : null}
+        {displayMod === DISPLAY_MODE_DAY ? (
+          <TextWrapper>{moment(today).format('DD')}</TextWrapper>
+        ) : null}
 
-        <TitleWrapper>{today.format('MMMM')}</TitleWrapper>
+        <TitleWrapper>{moment(today).format('MMMM')}</TitleWrapper>
 
-        <TextWrapper>{today.format('YYYY')}</TextWrapper>
+        <TextWrapper>{moment(today).format('YYYY')}</TextWrapper>
       </div>
 
       <ButtonsCenterWrapper>
         <ButtonWrapper
           type="button"
           unPressed={displayMod === DISPLAY_MODE_MONTH}
-          onClick={() => setDisplayMod(DISPLAY_MODE_MONTH)}
+          onClick={() => dispatch(updateDisplayMod(DISPLAY_MODE_MONTH))}
         >
           Month
         </ButtonWrapper>
@@ -94,7 +91,7 @@ const Monitor = ({
         <ButtonWrapper
           type="button"
           unPressed={displayMod === DISPLAY_MODE_DAY}
-          onClick={() => setDisplayMod(DISPLAY_MODE_DAY)}
+          onClick={() => dispatch(updateDisplayMod(DISPLAY_MODE_DAY))}
         >
           Day
         </ButtonWrapper>
