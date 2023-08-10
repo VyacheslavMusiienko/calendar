@@ -16,10 +16,8 @@ const defaultEvent = {
 };
 
 const App = () => {
-  const { today, displayMod } = useAppSelector((state) => ({
-    today: state.dateReducer.today,
-    displayMod: state.displayModeReducer.displayMod,
-  }));
+  const { today } = useAppSelector((state) => state.dateReducer);
+  const { displayMod } = useAppSelector((state) => state.displayModeReducer);
 
   const [events, setEvents] = useState<User[]>([]);
   const [event, setEvent] = useState<User | null>(null);
