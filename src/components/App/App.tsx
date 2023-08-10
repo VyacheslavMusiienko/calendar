@@ -4,10 +4,10 @@ import { ShadowWrapper } from '../../containers';
 import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH, TOTAL_DAY, URI } from '../../helpers/constant';
 import { useAppSelector } from '../../hooks/redux';
 import { User } from '../../type';
+import CalendarForm from '../CalendarForm';
 import CalendarGrid from '../CalendarGrid';
 import DayShowComponent from '../DayShowComponent';
 import Monitor from '../Monitor';
-import CalendarForm from '../CalendarForm';
 
 const defaultEvent = {
   title: '',
@@ -16,10 +16,10 @@ const defaultEvent = {
 };
 
 const App = () => {
-  // const dispatch = useAppDispatch();
-
-  const { today } = useAppSelector((state) => state.dateReducer);
-  const { displayMod } = useAppSelector((state) => state.displayModeReducer);
+  const { today, displayMod } = useAppSelector((state) => ({
+    today: state.dateReducer.today,
+    displayMod: state.displayModeReducer.displayMod,
+  }));
 
   const [events, setEvents] = useState<User[]>([]);
   const [event, setEvent] = useState<User | null>(null);
@@ -29,6 +29,14 @@ const App = () => {
   const startDay = moment(today).startOf('month').startOf('week');
   const startDayQuery = startDay.clone().format('X');
   const endDayQuery = startDay.clone().add(TOTAL_DAY, 'days').format('X');
+
+  useEffect(() => {
+    fetch(`${URI}/events?date_gte=${startDayQuery}&date_lte=${endDayQuery}`)
+      .then((res) => res.json())
+      .then((res) => {
+        setEvents(res);
+      });
+  }, [today]);
 
   const openFormHandler = (
     methodName: 'Update' | 'Create',
@@ -51,14 +59,6 @@ const App = () => {
     setShowForm(true);
     openFormHandler(methodName, eventForUpdate, dayItem);
   };
-
-  useEffect(() => {
-    fetch(`${URI}/events?date_gte=${startDayQuery}&date_lte=${endDayQuery}`)
-      .then((res) => res.json())
-      .then((res) => {
-        setEvents(res);
-      });
-  }, [today]);
 
   const cancelButtonHuddler = () => {
     setShowForm(false);

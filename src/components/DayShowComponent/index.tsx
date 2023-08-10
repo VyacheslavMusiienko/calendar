@@ -164,6 +164,7 @@ const DayShowComponent = ({
   };
 
   const [, setCount] = useState(0);
+
   useEffect(() => {
     const timerHuddler = setInterval(() => {
       setCount((prevState) => prevState + 1);
