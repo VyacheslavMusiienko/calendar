@@ -130,7 +130,7 @@ const App = () => {
       },
     })
       .then((res) => res.json())
-      .then((res) => {
+      .then(() => {
         setEvents((prevState) => prevState.filter((eventEl) => eventEl.id !== event.id));
         cancelButtonHuddler();
       })
