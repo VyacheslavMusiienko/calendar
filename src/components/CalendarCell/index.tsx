@@ -36,7 +36,7 @@ const CalendarCell = ({ dayItem, openFormHandler, events }: CalendarCellProps) =
     >
       <RowInCell justifyContent="flex-end">
         <ShowDayWrapper>
-          <DayWrapper onDoubleClick={() => openFormHandler('Create', null, dayItem)}>
+          <DayWrapper onClick={() => openFormHandler('Create', null, dayItem)}>
             {isCurrentDay(dayItem) ? (
               <CurrentDay>{dayItem.format('D')}</CurrentDay>
             ) : (
@@ -47,7 +47,7 @@ const CalendarCell = ({ dayItem, openFormHandler, events }: CalendarCellProps) =
         <EventListWrapper>
           {events.slice(0, 2).map((event) => (
             <EventListItemWrapper key={event.id}>
-              <EventItemWrapper onDoubleClick={() => openFormHandler('Update', event)}>
+              <EventItemWrapper onClick={() => openFormHandler('Update', event)}>
                 {event.title}
               </EventItemWrapper>
             </EventListItemWrapper>
