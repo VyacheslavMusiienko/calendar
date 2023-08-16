@@ -20,7 +20,6 @@ type DayShowComponentsProps = {
   cancelButtonHuddler: () => void;
   eventFetchHandler: () => void;
   removeEventHandler: () => void;
-  method: 'Update' | 'Create' | null;
   openFormHandler: (
     methodName: 'Update' | 'Create',
     eventForUpdate?: User | null,
@@ -128,10 +127,10 @@ const DayShowComponent = ({
   cancelButtonHuddler,
   eventFetchHandler,
   removeEventHandler,
-  method,
   openFormHandler,
 }: DayShowComponentsProps) => {
   const { today } = useAppSelector((state) => state.dateReducer);
+  const { method } = useAppSelector((state) => state.methodReducer);
 
   const [showTimePiker, setShowTimePiker] = useState(false);
 

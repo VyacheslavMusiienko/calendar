@@ -7,6 +7,7 @@ import {
   ShadowWrapper,
 } from '../../containers';
 import { User } from '../../type';
+import { useAppSelector } from '../../hooks/redux';
 
 const FormPositionWrapper = styled('div')`
   position: absolute;
@@ -36,7 +37,6 @@ type CalendarFormProps = {
   changeEventHandler: (text: string, field: 'title' | 'description' | 'date') => void;
   eventFetchHandler: () => void;
   removeEventHandler: () => void;
-  method: 'Update' | 'Create' | null;
 };
 
 const CalendarForm = ({
@@ -45,8 +45,9 @@ const CalendarForm = ({
   changeEventHandler,
   eventFetchHandler,
   removeEventHandler,
-  method,
 }: CalendarFormProps) => {
+  const { method } = useAppSelector((state) => state.methodReducer);
+
   return (
     <FormPositionWrapper onClick={cancelButtonHuddler}>
       <FormWrapper onClick={(e) => e.stopPropagation()}>

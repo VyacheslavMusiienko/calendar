@@ -2,7 +2,8 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { ShadowWrapper } from '../../containers';
 import { DISPLAY_MODE_DAY, DISPLAY_MODE_MONTH, TOTAL_DAY, URI } from '../../helpers/constant';
-import { useAppSelector } from '../../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { updateMethod } from '../../store/reducer/methodSlice';
 import { User } from '../../type';
 import CalendarForm from '../CalendarForm';
 import CalendarGrid from '../CalendarGrid';
@@ -16,13 +17,15 @@ const defaultEvent = {
 };
 
 const App = () => {
+  const dispatch = useAppDispatch();
+
   const { today } = useAppSelector((state) => state.dateReducer);
   const { displayMod } = useAppSelector((state) => state.displayModeReducer);
+  const { method } = useAppSelector((state) => state.methodReducer);
 
   const [events, setEvents] = useState<User[]>([]);
   const [event, setEvent] = useState<User | null>(null);
   const [isShowForm, setShowForm] = useState<boolean>(false);
-  const [method, setMethod] = useState<'Update' | 'Create' | null>(null);
 
   const startDay = moment(today).startOf('month').startOf('week');
   const startDayQuery = startDay.clone().format('X');
@@ -41,7 +44,7 @@ const App = () => {
     eventForUpdate?: User | null,
     dayItem?: moment.Moment
   ) => {
-    setMethod(methodName);
+    dispatch(updateMethod(methodName));
     if (eventForUpdate) {
       setEvent(eventForUpdate);
     } else {
@@ -148,7 +151,6 @@ const App = () => {
           changeEventHandler={changeEventHandler}
           eventFetchHandler={eventFetchHandler}
           removeEventHandler={removeEventHandler}
-          method={method}
         />
       ) : null}
       <ShadowWrapper>
@@ -166,7 +168,6 @@ const App = () => {
             cancelButtonHuddler={cancelButtonHuddler}
             eventFetchHandler={eventFetchHandler}
             removeEventHandler={removeEventHandler}
-            method={method}
             openFormHandler={openFormHandler}
           />
         ) : null}
