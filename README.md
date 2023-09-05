@@ -1,6 +1,7 @@
 # Calendar
 It is a simple calendar in which you can create events for a specified time and date
 
+
 ## Install
 
 ```
@@ -24,3 +25,4 @@ In the new terminal to launch the application
 ```
 npm run dev
 ```
+![calendar](https://github.com/VyacheslavMusiienko/calendar/assets/48568468/31f682a2-b62b-4ec3-b07a-cc8ad40b4007)
