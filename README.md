@@ -10,9 +10,6 @@ It is a simple calendar in which you can create events for a specified time and 
 ```
   cd ./calendar
 ```
-```
-  git checkout
-```
 ## Running application
 
 ```
