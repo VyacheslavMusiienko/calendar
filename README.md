@@ -1,4 +1,5 @@
 # Calendar
+It is a simple calendar in which you can create events for a specified time and date
 
 ## Install
 
